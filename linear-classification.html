@@ -1131,8 +1131,8 @@ $$<br />
 The error can be measured with the loss function. The smaller the difference is the better was the prediction.</p>
 <h3 id="multi-class-support-vector-machine-svm-loss"><a name="user-content-multi-class-support-vector-machine-svm-loss" href="#multi-class-support-vector-machine-svm-loss" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Multi-class Support Vector Machine (SVM) Loss</h3>
 <p>The SVM loss is defined in a way that the correct class should have a higher score than the incorrect classes.</p>
-<p>![alt text][logo]<br />
-logo: Hand-written notes and and example</p>
+<p><img alt="alt text" src="/Users/oliver/projects/crowdnet/git/svm-loss.jpg" title="Hand-written notes and and example" /><br />
+<em>Fig: Hand-written notes and and example</em></p>
 <p><strong>In fact, the SVM loss demands that the correct class has a higher score by a specific margin than all other. If not it accumulates loss.</strong><br />
 $$<br />
 L_i = \sum_{j \neq y_i} max(0,s_j - s_{y_i} + \Delta)<br />
@@ -1149,16 +1149,20 @@ $$<br />
 But we wish to remove this ambiguity (why: see below?)</p>
 <p>Regularization terms are part of the loss function and are independent of the data samples $x$.<br />
 The most common regularization penalty is the L2 norm.<br />
-Eq3<br />
+$$<br />
+L=<br />
+$$<br />
+<em>Eq: Full equation of the multiclass SVM loss</em><br />
 Because it penalizes the elements quadraticly, larger weights are more penalized than smaller weights.</p>
 <p>So why do we want to penalize larger values or peaks in specific dimensions of matrix $W$.<br />
-The classifier should be encouraged to take <strong>all</strong> dimensions into account as this fact improves generalization and leads to less overfitting. For example, if there is no regularization then a weight vector $w_1=[1,0,0,0]$ would have the same score as the vector $w_2=[0.25,0.25,0.25,0.25]$, since $w_1^Tx = w_2^Tx = 1$.</p>
+<em>The classifier should be encouraged to take <strong>all</strong> dimensions into account</em> as this fact improves generalization and leads to less overfitting. For example, if there is no regularization then a weight vector $w_1=[1,0,0,0]$ would have the same score as the vector $w_2=[0.25,0.25,0.25,0.25]$, since $w_1^Tx = w_2^Tx = 1$.</p>
 <p>The bias term does not need to be regularized.</p>
 <h3 id="practical-considerations"><a name="user-content-practical-considerations" href="#practical-considerations" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Practical Considerations</h3>
 <h4 id="delta-delta"><a name="user-content-delta-delta" href="#delta-delta" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Delta $\Delta$</h4>
-<p>Delta is a hyperparameter. Usually, the optimal value for a hyperparameter can be found by using cross-validation. However, both $\Delta$ and $\lambda$ do control the same thing. With $\lambda$ you have direct influence on the score differences. This fact makes the adjustment of $\Delta$ meaningless.</p>
-<h4 id="_1"><a name="user-content-_1" href="#_1" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a></h4>
-<p>The rest of this section discusses differences between different SVM versions (One-vs-all, Structured SVM, etc.) Not really a priority at the moment.</p>
+<p>Delta is a hyperparameter. Usually, the optimal value for a hyperparameter can be found by using cross-validation. However, both $\Delta$ and $\lambda$ do control the same thing. With $\lambda$ you have direct influence on the score differences. This fact makes the adjustment of $\Delta$ meaningless - ** it can safely be set to $\Delta = 1.0$ in all cases.</p>
+<h4 id="svm-is-this-already-the-whole-svm"><a name="user-content-svm-is-this-already-the-whole-svm" href="#svm-is-this-already-the-whole-svm" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SVM - Is this already the whole SVM?</h4>
+<p>The rest of this section discusses differences between different SVM versions (One-vs-all, Structured SVM, etc.) Not really a priority at the moment. <em>However, it is somehow suprising that the above equations seem to formalize a complete SVM?</em> Not really sure&hellip; It would mean that the SVM score function is a simple linear classifier and the loss function introduces a margin with regularization to let the correct class stand out.<br />
+Of course, there was nothing about kernels yet, but the rest&hellip; have to check later.</p>
 <h3 id="softmax-classifier"><a name="user-content-softmax-classifier" href="#softmax-classifier" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Softmax classifier</h3>
 <p>The softmax funciton assigns a probability to a given score. Basically it exponentiats its input and then normalizes it:<br />
 Equation:</p></article></body></html>

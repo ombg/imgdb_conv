@@ -112,8 +112,8 @@ The error can be measured with the loss function. The smaller the difference is 
 
  The SVM loss is defined in a way that the correct class should have a higher score than the incorrect classes.
 
-![alt text][logo]
-logo: Hand-written notes and and example
+![alt text](svm-loss.jpg "Hand-written notes and and example")
+*Fig: Hand-written notes and and example*
 
 **In fact, the SVM loss demands that the correct class has a higher score by a specific margin than all other. If not it accumulates loss.**
 $$
@@ -137,21 +137,25 @@ But we wish to remove this ambiguity (why: see below?)
 
 Regularization terms are part of the loss function and are independent of the data samples $x$.
 The most common regularization penalty is the L2 norm.
-Eq3
+$$
+L=
+$$
+*Eq: Full equation of the multiclass SVM loss*
 Because it penalizes the elements quadraticly, larger weights are more penalized than smaller weights.
 
 So why do we want to penalize larger values or peaks in specific dimensions of matrix $W$.
-The classifier should be encouraged to take **all** dimensions into account as this fact improves generalization and leads to less overfitting. For example, if there is no regularization then a weight vector $w_1=[1,0,0,0]$ would have the same score as the vector $w_2=[0.25,0.25,0.25,0.25]$, since $w_1^Tx = w_2^Tx = 1$.
+*The classifier should be encouraged to take **all** dimensions into account* as this fact improves generalization and leads to less overfitting. For example, if there is no regularization then a weight vector $w_1=[1,0,0,0]$ would have the same score as the vector $w_2=[0.25,0.25,0.25,0.25]$, since $w_1^Tx = w_2^Tx = 1$.
 
 The bias term does not need to be regularized.
 
 ### Practical Considerations
 
 #### Delta $\Delta$
-Delta is a hyperparameter. Usually, the optimal value for a hyperparameter can be found by using cross-validation. However, both $\Delta$ and $\lambda$ do control the same thing. With $\lambda$ you have direct influence on the score differences. This fact makes the adjustment of $\Delta$ meaningless.
+Delta is a hyperparameter. Usually, the optimal value for a hyperparameter can be found by using cross-validation. However, both $\Delta$ and $\lambda$ do control the same thing. With $\lambda$ you have direct influence on the score differences. This fact makes the adjustment of $\Delta$ meaningless - ** it can safely be set to $\Delta = 1.0$ in all cases.
 
-####
-The rest of this section discusses differences between different SVM versions (One-vs-all, Structured SVM, etc.) Not really a priority at the moment.
+#### SVM - Is this already the whole SVM?
+The rest of this section discusses differences between different SVM versions (One-vs-all, Structured SVM, etc.) Not really a priority at the moment. *However, it is somehow suprising that the above equations seem to formalize a complete SVM?* Not really sure... It would mean that the SVM score function is a simple linear classifier and the loss function introduces a margin with regularization to let the correct class stand out.
+Of course, there was nothing about kernels yet, but the rest... have to check later.
 
 ### Softmax classifier
 
