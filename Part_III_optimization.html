@@ -1040,129 +1040,19 @@ MathJax.Hub.Config({
   showProcessingMessages: false
 });
 </script>
-<title>linear-classification</title></head><body><article class="markdown-body"><p>+++<br />
-date = &ldquo;2016-09-11T14:34:24+02:00&rdquo;<br />
-draft = true<br />
-title = &ldquo;linear classification&rdquo;</p>
-<p>+++</p>
-<p>Table of Contents:</p>
+<title>Part_III_optimization</title></head><body><article class="markdown-body"><p>Table of Contents:</p>
 <ul>
-<li><a href="#intro">Intro to Linear classification</a></li>
-<li><a href="#mapping">Parameterized mapping - from images to label scores</a></li>
-<li><a href="#interpreting_lin_cl">Interpreting a Linear Classifier</a></li>
+<li><a href="#grad">Gradient Descent</a></li>
 </ul>
-<p>These are my personal notes about <a href="http://cs231n.stanford.edu/">course cs231n</a> from Stanford university. (Full disclaimer?</p>
-<p><a name='intro'></a></p>
-<h2 id="linear-classification"><a name="user-content-linear-classification" href="#linear-classification" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Linear Classification</h2>
-<p>The k-Nearest Neighbor classifier is probably the most basic classifier one could think of. It simply remembers all the training data and then samples from the test set are simply compared to each sample of the training set. The score is the euclidean distance of each pair. Sadly, it comes with a couple of critical disadvantages:</p>
-<ul>
-<li>The kNN classifier needs to remember all training data in order to do the comparisons with future training data. This is space inefficient. (<strong>memory</strong>)</li>
-<li>A new test sample needs to be compared to every training sample in order to get classified. This takes a lot of time. (<strong>CPU</strong>)</li>
-</ul>
-<p><strong>Overview</strong> Hence, here is a more powerful apporach.<br />
-It consists of three key components.</p>
-<ul>
-<li>Score function - It maps the raw data to class scores.</li>
-<li>Loss function - It computes the error between prediction and reference data.</li>
-<li>Optimization - <em>Covered in the next chapter.</em></li>
-</ul>
-<p><a name='mapping'></a></p>
-<h3 id="parameterized-mapping-from-images-to-label-scores"><a name="user-content-parameterized-mapping-from-images-to-label-scores" href="#parameterized-mapping-from-images-to-label-scores" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Parameterized mapping - from images to label scores</h3>
-<p>The general form of a score function is <br />
-$$<br />
-y = f(x)<br />
-$$</p>
-<p>where $y$ is the reference data and x are the training samples/features.<br />
-More formally written:</p>
-<p>$$<br />
-f: \mathbb{R}^{D} \mapsto \mathbb{R}^K<br />
-$$</p>
-<p>A $D$-dimensional feature is mapped to one of $K$ scores using a function $f$.</p>
-<h4 id="linear-classifier"><a name="user-content-linear-classifier" href="#linear-classifier" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Linear Classifier</h4>
-<p>Now we need to define this <strong>score function</strong> $f$:</p>
-<p>In its simplest form it is a linear function:</p>
-<p>$$<br />
-y = f(x_i,W,b) = Wx_i + b<br />
-$$</p>
-<p>$Wx_i$ is a multiplication of the trained weights $W$ with a sample $x_i$. The number of rows of $W$ corresponds to the number of classes, i.e. this matrix multiplication is a <em>parallel</em> evaluation of 10 seperate classifiers.<br />
-<strong>Every row of $W$ is a classifier for one of the classes.</strong></p>
-<p><a name='interpreting_lin_cl'></a></p>
-<h3 id="interpreting-a-linear-classifier"><a name="user-content-interpreting-a-linear-classifier" href="#interpreting-a-linear-classifier" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Interpreting a Linear Classifier</h3>
-<p>If $x_i$ are the raw pixel values then $x_i$ can be seen as a point in a <strong>pixel space</strong>. Later this will be the feature space.</p>
-<h4 id="geometric-interpretation"><a name="user-content-geometric-interpretation" href="#geometric-interpretation" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Geometric Interpretation</h4>
-<ul>
-<li>This linear equation defines the decision boundary.</li>
-<li>If you alter $W$ you rotate the decision boundary.</li>
-<li>If you alter $b$ you translate (parallel shift) the decision boundary.</li>
-<li>This means, without the bias term the <em>decision boundary would be forced to cross the origin</em>. This, however, doesn&rsquo;t represent the reality well.</li>
-</ul>
-<h4 id="interpretation-of-linear-classifiers-as-template-matching"><a name="user-content-interpretation-of-linear-classifiers-as-template-matching" href="#interpretation-of-linear-classifiers-as-template-matching" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Interpretation of linear classifiers as template matching</h4>
-<p>The linear classifier can also be seen as a template matcher. Each row $m$ in $W$ corresponds to a template. Each image sample is compared to the templates by using the inner product:</p>
-<p>$$<br />
-W(m,:)^T \cdot \vec{x_i} =&hellip;=  \vec{a} \cdot \vec{b} = \sum_{i=1}^{N}a_i b_i<br />
-$$</p>
-<p>As you can see the inner product is just a part of the matrix-vector multiplication above. <br />
-- The higher the score, the better the sample fits to the model.<br />
-- Template matching is equivalent to computing the inner product of $W(m,:)$ and $x_i$.<br />
-- Linear classification can be seen as a more advanced version of kNN classifier. We compute the inner product instead of the $L_1$ or $L_2$ distance. We do not compare it with every training example but only with the (learned) average image or template.<br />
-- It should be added that the scores, we compute with the inner product, indicate the correct label, which is some kind of error metric as the Lp distance. <strong>However, it is not really considered as a loss function</strong> (see chapter loss function for details.) </p>
-<p>Result: The learned template for a ship most likely has a lot of blue pixels (ocean) in it. But what if there is an image with a ship with out water to be classified?</p>
-<p>Neural nets are able to generalize much better on this using several hidden layers.</p>
-<h4 id="bias-trick"><a name="user-content-bias-trick" href="#bias-trick" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Bias trick</h4>
-<ul>
-<li>Add another element with value $1$ to every image sample $x_i$. Then $x_i \in \mathbb{R}^{D+1}$</li>
-<li>Concatenate $W$ and $\vec{b}$ horizontally, <br />
- These two steps lead to the same equation as above:<br />
-$$<br />
- y = f(x_i,W,b) = Wx_i + b = f(x_i&rsquo;,W&rsquo;)<br />
- $$</li>
-</ul>
-<h4 id="image-data-preprocessing"><a name="user-content-image-data-preprocessing" href="#image-data-preprocessing" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Image data <strong><em>pre</em></strong>processing</h4>
-<ul>
-<li>
-<p><strong>Mean image:</strong> Always center your data by subtracting the mean of every feature (here: the raw pixel values). Result: $x_{i,d} \in [-127,&hellip;,127]$</p>
-</li>
-<li>
-<p><strong>Scale image:</strong> Additionally one could scale it to $x_{i,d} \in [-1,&hellip;,1]$</p>
-</li>
-</ul>
-<h3 id="loss-function-cost-function-objective-function"><a name="user-content-loss-function-cost-function-objective-function" href="#loss-function-cost-function-objective-function" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Loss function (== Cost function == Objective function)</h3>
-<p>The images $x_i$ and the reference labels $y_i$ are given and fixed. So we need to change/train $W$ in order to minimize the error between predictions and reference.<br />
-The error can be measured with the loss function. The smaller the difference is the better was the prediction.</p>
-<h3 id="multi-class-support-vector-machine-svm-loss"><a name="user-content-multi-class-support-vector-machine-svm-loss" href="#multi-class-support-vector-machine-svm-loss" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Multi-class Support Vector Machine (SVM) Loss</h3>
-<p>The SVM loss is defined in a way that the correct class should have a higher score than the incorrect classes.</p>
-<p><img alt="alt text" src="/Users/oliver/projects/crowdnet/git/svm-loss.jpg" title="Hand-written notes and and example" /><br />
-<em>Fig: Hand-written notes and and example</em></p>
-<p><strong>In fact, the SVM loss demands that the correct class has a higher score by a specific margin than all other. If not it accumulates loss.</strong><br />
-$$<br />
-L_i = \sum_{j \neq y_i} max(0,s_j - s_{y_i} + \Delta)<br />
-$$</p>
-<p>The same equation for the special case of a linear score function $s_j = f(x_i,W)_j$:</p>
-<p>$$<br />
-L_i = \sum_{j \neq y_i} max(0, w^T_j x_i - w^T_{y_i} x_i + \Delta )<br />
-$$<br />
-- We substitute s for the linear classification formula.<br />
-- $w^T$ is one specific template, one row, of the weight matrix $W$. In order to compute the inner product, we transpose the row vector into a column vector.<br />
-- <strong>Hinge loss</strong> is the loss function with threshold-at-zero property.</p>
-<h4 id="regularization"><a name="user-content-regularization" href="#regularization" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Regularization</h4>
-<p>Up to now the loss function would be zero $(L_i=0)$ for several different sets of $W$. <br />
-But we wish to remove this ambiguity (why: see below?)</p>
-<p>Regularization terms are part of the loss function and are independent of the data samples $x$.<br />
-The most common regularization penalty is the L2 norm.<br />
-$$<br />
-L=<br />
-$$<br />
-<em>Eq: Full equation of the multiclass SVM loss</em><br />
-Because it penalizes the elements quadraticly, larger weights are more penalized than smaller weights.</p>
-<p>So why do we want to penalize larger values or peaks in specific dimensions of matrix $W$.<br />
-<em>The classifier should be encouraged to take <strong>all</strong> dimensions into account</em> as this fact improves generalization and leads to less overfitting. For example, if there is no regularization then a weight vector $w_1=[1,0,0,0]$ would have the same score as the vector $w_2=[0.25,0.25,0.25,0.25]$, since $w_1^Tx = w_2^Tx = 1$.</p>
-<p>The bias term does not need to be regularized.</p>
-<h3 id="practical-considerations"><a name="user-content-practical-considerations" href="#practical-considerations" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Practical Considerations</h3>
-<h4 id="delta-delta"><a name="user-content-delta-delta" href="#delta-delta" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Delta $\Delta$</h4>
-<p>Delta is a hyperparameter. Usually, the optimal value for a hyperparameter can be found by using cross-validation. However, both $\Delta$ and $\lambda$ do control the same thing. With $\lambda$ you have direct influence on the score differences. This fact makes the adjustment of $\Delta$ meaningless - ** it can safely be set to $\Delta = 1.0$ in all cases.</p>
-<h4 id="svm-is-this-already-the-whole-svm"><a name="user-content-svm-is-this-already-the-whole-svm" href="#svm-is-this-already-the-whole-svm" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>SVM - Is this already the whole SVM?</h4>
-<p>The rest of this section discusses differences between different SVM versions (One-vs-all, Structured SVM, etc.) Not really a priority at the moment. <em>However, it is somehow suprising that the above equations seem to formalize a complete SVM?</em> Not really sure&hellip; It would mean that the SVM score function is a simple linear classifier and the loss function introduces a margin with regularization to let the correct class stand out.<br />
-Of course, there was nothing about kernels yet, but the rest&hellip; have to check later.</p>
-<h3 id="softmax-classifier"><a name="user-content-softmax-classifier" href="#softmax-classifier" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Softmax classifier</h3>
-<p>The softmax funciton assigns a probability to a given score. Basically it exponentiats its input and then normalizes it:<br />
-Equation:</p></article></body></html>
+<p>These are my personal notes about <a href="http://cs231n.stanford.edu/">course cs231n</a> from Stanford university. </p>
+<p><a name='grad'></a></p>
+<h2 id="gradient-descent"><a name="user-content-gradient-descent" href="#gradient-descent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Gradient Descent</h2>
+<p>Compute the gradient of the loss function with respect to the weights. Remember, on page 11, we have two different gradients for the correct and incorrect class, respectively.</p>
+<p>Ok, emm, do we now take the gradient of the loss function, or do we take the weights (which ones??) And then update the weights.</p>
+<p>Repeat the process.</p>
+<p>Gradient Descent is currently by far the most common and established way of optimizing Neural Netwowrk loss functions.</p>
+<h3 id="mini-batch-gradient-descent"><a name="user-content-mini-batch-gradient-descent" href="#mini-batch-gradient-descent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Mini-batch gradient descent</h3>
+<p>You would need a lot of iterations in order to compute the new weights for every training sample.<br />
+It is common to use just a batch of ca. 256 samples in order to update the weights. This works because the samples are correlate.</p>
+<h3 id="stochastic-gradient-descent"><a name="user-content-stochastic-gradient-descent" href="#stochastic-gradient-descent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Stochastic Gradient Descent</h3>
+<p>Theretically, it uses only a single example to update the weights. In practise, however, it referes to mini-batch gradient descent??</p></article></body></html>

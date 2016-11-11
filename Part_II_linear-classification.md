@@ -138,9 +138,11 @@ But we wish to remove this ambiguity (why: see below?)
 Regularization terms are part of the loss function and are independent of the data samples $x$.
 The most common regularization penalty is the L2 norm.
 $$
-L=
+L= 1/N \left( \sum_{i=1}^N L_i \right) + \lambda R(W) ,where \\ R(W) = \sum_k \sum_l W^2_{k,l}
 $$
 *Eq: Full equation of the multiclass SVM loss*
+
+
 Because it penalizes the elements quadraticly, larger weights are more penalized than smaller weights.
 
 So why do we want to penalize larger values or peaks in specific dimensions of matrix $W$.
@@ -159,8 +161,41 @@ Of course, there was nothing about kernels yet, but the rest... have to check la
 
 ### Softmax classifier
 
-The softmax funciton assigns a probability to a given score. Basically it exponentiats its input and then normalizes it:
-Equation:
+The Softmax classifier has a different loss function.
+**It is the generalized version of logistic regression which works for multiple classes.**
 
+The softmax function assigns a normalized probability to a given score by these two steps:
+- Exponentiation of the scores gives an unnormalized probability.
+- Division of the scores performs the normalization, so that the probabilities sum to one.
+$$
+P(y_i|x_i;W) = \frac{e^{f_{y_i}}}{\sum_j e^{f_j}}
+$$
+*Eq: Softmax function*
+
+**Aside:**
+- This can be interpreted as Maximum Likelihood Estimation (MLE).
+- The full loss function, i.e. including regularization, can then be interpreted as a Maximum a posterori (MAP) estimation
+- *WTF??*
+
+**Numeric stability:**
+- Always thrive for zero mean and equal variance (besides the issues described above)
+- Never divide really large numbers, you can use a normalization trick to avoid this.
+
+#### SVM vs. Softmax
+
+- SVM uses the hinge loss function whereas Softmax uses the cross-entropy loss function.
+- SVM classifier gives you scores, the Softmax classifier gives you probabilities.
+- However, these "probabilities" should be rather seen as confidence values because the probability distribution directly depends on the regularization parameter lambda - which you choose. The ordering of the scores is interpretable, but not the absolute numbers.
+
+#### SVM vs. Softmax in practice. When do you choose what?
+- SVM can be thought of as more ruthless because it is only interested in if the margins are satisfied. It is not interested how large the difference of the scores is as long as the margin is met.
+- The Softmax always can have higher or lower probabilities, the loss always could get better. Sometimes, this is not desirable.
+
+### Summary
+
+- Definition of a score function $f$. In this chapter it was always a linear function depending on weights and biases.
+- It is a parametric apporach. Ones the classifier is learned, the training data can be discarded. This is a huge advantage compared to a kNN classifier.
+
+- Definition of two loss functions commonly used for linear classifiers: SVM and Softmax.
 
 
