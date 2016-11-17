@@ -1040,19 +1040,37 @@ MathJax.Hub.Config({
   showProcessingMessages: false
 });
 </script>
-<title>Part_III_optimization</title></head><body><article class="markdown-body"><p>Table of Contents:</p>
-<ul>
-<li><a href="#grad">Gradient Descent</a></li>
-</ul>
+<title>Part_III_optimization</title></head><body><article class="markdown-body"><p>Table of Contents:<br />
+- <a href="#SVMlossgrad">Computing the gradient analytically with calculus</a><br />
+- <a href="#graddescent">Gradient Descent</a></p>
 <p>These are my personal notes about <a href="http://cs231n.stanford.edu/">course cs231n</a> from Stanford university. </p>
-<p><a name='grad'></a></p>
-<h2 id="gradient-descent"><a name="user-content-gradient-descent" href="#gradient-descent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Gradient Descent</h2>
-<p>Compute the gradient of the loss function with respect to the weights. Remember, on page 11, we have two different gradients for the correct and incorrect class, respectively.</p>
-<p>Ok, emm, do we now take the gradient of the loss function, or do we take the weights (which ones??) And then update the weights.</p>
-<p>Repeat the process.</p>
-<p>Gradient Descent is currently by far the most common and established way of optimizing Neural Netwowrk loss functions.</p>
+<p><a name='SVMlossgrad'></a></p>
+<h1 id="computing-the-gradient-analytically-with-calculus"><a name="user-content-computing-the-gradient-analytically-with-calculus" href="#computing-the-gradient-analytically-with-calculus" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Computing the gradient analytically with calculus</h1>
+<p>The SVM loss function calculates a loss. The more consistent the predictions, based on training samples $x_i$, are with their ground truth labels $y_i$, the lower is the SVM loss. The SVM loss is a function of the weights $W$, which we need to minimize. We do this by computing the gradient of the loss function with respect to the weights. Remember, on page 11, we have two different gradients for the correct and incorrect class, respectively.<br />
+It computes the difference of the score function and the actual score with the help of the SVM loss.</p>
+<p>Insert equations here:</p>
+<p>In the equations shown here, we have $\nabla_{w_{y_i}} L_{i}$ which denotes the gradient vector of the loss $L$ with respect to $w_{y_i}$. However, I am still unsure how the gradients, derivatives, etc. look like. Which of the variables is a vector, which is a matrix, what is the dimension of $\nabla_{w_{y_i}} L_{i}$ eventually? You should understand this with the help of this: </p>
+<p><a href="http://cs231n.stanford.edu/vecDerivs.pdf">Derivations in ML</a></p>
+<p>If you got it then write it down in the thesis. Maybe here as a first version.</p>
+<p><a name='graddescent'></a></p>
+<h1 id="gradient-descent"><a name="user-content-gradient-descent" href="#gradient-descent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Gradient Descent</h1>
+<p>Gradient Descent is currently by far the most common and established way of optimizing Neural Network loss functions.</p>
 <h3 id="mini-batch-gradient-descent"><a name="user-content-mini-batch-gradient-descent" href="#mini-batch-gradient-descent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Mini-batch gradient descent</h3>
 <p>You would need a lot of iterations in order to compute the new weights for every training sample.<br />
 It is common to use just a batch of ca. 256 samples in order to update the weights. This works because the samples are correlate.</p>
 <h3 id="stochastic-gradient-descent"><a name="user-content-stochastic-gradient-descent" href="#stochastic-gradient-descent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Stochastic Gradient Descent</h3>
-<p>Theretically, it uses only a single example to update the weights. In practise, however, it referes to mini-batch gradient descent??</p></article></body></html>
+<p>Theoretically, it uses only a single example to update the weights. In practise, however, it refers to mini-batch gradient descent??</p>
+<h3 id="tuning-the-hyperparameters"><a name="user-content-tuning-the-hyperparameters" href="#tuning-the-hyperparameters" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Tuning the hyperparameters</h3>
+<dl>
+  <dt>Learning rate or step size</dt>
+    <dd> The gradient matrix of the weights is multiplied by this factor. Every time, or every iteration, when a new gradient has been computed it is multiplied by this factor. If it is set too small, it might take a long time until the loss function converges. If it is set too large it might not converge at all or even diverge. (Correct?) Typical range: </dd>
+  <dt>Number of iterations</dt>
+    <dd></dd>
+  <dt>Batch size</dt>
+    <dd>The batch size determines the number of training samples which are used to update the weights in one iteration. The weights are updated with weights += - learning_rate * weights_grad. Th</dd>
+  <dt>Regularization strength</dt>
+    <dd></dd>
+
+</dl>
+
+<p>In conclusion, the patches shown at the bottom of svm.ipynb show the actual weights and not the vectors $x_i$ , right? How is is it possible that the weights actually show the form of a car in the car picture? It must have sth to do with the score function.</p></article></body></html>
