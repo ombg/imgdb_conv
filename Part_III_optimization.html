@@ -1052,6 +1052,8 @@ It computes the difference of the score function and the actual score with the h
 <p>In the equations shown here, we have $\nabla_{w_{y_i}} L_{i}$ which denotes the gradient vector of the loss $L$ with respect to $w_{y_i}$. However, I am still unsure how the gradients, derivatives, etc. look like. Which of the variables is a vector, which is a matrix, what is the dimension of $\nabla_{w_{y_i}} L_{i}$ eventually? You should understand this with the help of this: </p>
 <p><a href="http://cs231n.stanford.edu/vecDerivs.pdf">Derivations in ML</a></p>
 <p>If you got it then write it down in the thesis. Maybe here as a first version.</p>
+<h3 id="gradient-check"><a name="user-content-gradient-check" href="#gradient-check" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Gradient check</h3>
+<p>The analytically computed gradients should be checked using a numerical method. The numerical and the anlytical result should contain the same gradient matrix $\nabla_{w} L$. The results can be compared using the Frobenius norm.</p>
 <p><a name='graddescent'></a></p>
 <h1 id="gradient-descent"><a name="user-content-gradient-descent" href="#gradient-descent" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Gradient Descent</h1>
 <p>Gradient Descent is currently by far the most common and established way of optimizing Neural Network loss functions.</p>
