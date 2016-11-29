@@ -20,7 +20,7 @@ In the equations shown here, we have $\nabla_{w_{y_i}} L_{i}$ which denotes the 
 If you got it then write it down in the thesis. Maybe here as a first version.
 
 ### Gradient check
-The analytically computed gradients should be checked using a numerical method. The numerical and the anlytical result should contain the same gradient matrix $\nabla_{w} L$. The results can be compared using the Frobenius norm.
+The analytically computed gradients should be checked using a numerical method. The numerical and the analytical result should contain the same gradient matrix $\nabla_{w} L$. The results can be compared using the Frobenius norm.
 
 
 

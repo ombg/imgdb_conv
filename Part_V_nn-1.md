@@ -42,10 +42,11 @@ A linear classifier $Wx+b$ can be modeled by one neuron. It has the additional f
 
 - Activation function seems to be called a non-linearity and vice versa.
 - It takes a single number as input and performs a fixed mathematical operation on it.
+- This single number is the computed score of the neuron's input: $\sigma(W x + b)$ This means that the linear equation's output (the score) is used as input to the activation function (e.g. Sigmoid or ReLU) 
 
 ### Sigmoid function
 Rarely ever used due to one major, and one minor reasons:
-- Sigmoids kill gradients. As soon as x is very small or very large, the sigmoid gets saturated to either 0 or 1, causing a gradient of zero. A small gradient means, no signal will flow through the neuron (major reason).
+- Sigmoids kill gradients. As soon as x is very small or very large, the sigmoid gets saturated to either 0 or 1, causing a gradient of zero. A small gradient means, no signal will flow through the neuron (major reason). The argument x of this function is normally the result of the score function f.
 - Sigmoids outputs are not zero centered which could cause undesirable zig-zagging in the gradient updates (minor reason).
 
 ### Tanh
@@ -91,6 +92,9 @@ $$
 - *Try out different activation functions with your favorite CNN library.*
 - ***But use ReLU eventually.*** See course notes for details.
 
+### TLDR
+Use ReLU, be careful with learning rate and possibly monitor the fraction of dead units.
+
 <a name='architectures'></a>
 
 
@@ -105,6 +109,7 @@ $$
 - We do not count the input layer when we say N-layer Neural Network.
 - It seems to be that "Multilayer Perceptron" (MLP) is just another word for NN.
 - The output layer does not have an activation function. This layer represents the class scores or regression results.
+I think you use the loss function's output as the final result which you compare with your target or labels (by using either cross entropy or hinge loss).
 - Size of a NN: 
     - Number of neurons (without input layer)
     - Number of learnable parameters (weights plus biases.) These are basically all edges in the graph.
