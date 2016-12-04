@@ -1,76 +1,56 @@
-# See
-# https://www.tensorflow.org/versions/r0.10/get_started/basic_usage.html
-# for details.
-#import gzip
-import os
-#import re
-import sys
-import tarfile
-
-from six.moves import urllib
 import tensorflow as tf
-#from tensorflow.models.image.cifar10 import cifar10
+txt_list = "/Users/oliver/data/cache/test_png_full.txt"
+# image_list = "/Users/oliver/data/cache/test_simple.txt"
+# image_list = "/Users/oliver/data/tmp/0.png 6"
 
-FLAGS = tf.app.flags.FLAGS
+def read_txt_file(txt):
 
-# Basic model parameters.
-tf.app.flags.DEFINE_string('data_dir', '../cifar10_data',
-                           """Path to the CIFAR-10 data directory.""")
-tf.app.flags.DEFINE_string('train_dir','../cifar10_train',
-                    """Directory where to write event logs """
-                    """and checkpoint.""")
-tf.app.flags.DEFINE_integer('batch_size', 100, 'Batch size. '
-                     'Must divide evenly into the dataset sizes')
-tf.app.flags.DEFINE_boolean('use_fp16', False,
-                            """Train the model using fp16.""")
+  f = open(txt, 'r')
+  file_list =[]
+  for txtline in f:
+    file_list.append(txtline)
 
-DATA_URL = 'http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz'
+  return file_list
 
+def read_my_file_format(filename_and_label_tensor):
+  """Consumes a single filename and label as a ' '-delimited string.
 
-def train():
-  # model will be built into the default graph. Why?
-  with tf.Graph().as_default():
+  Args:
+    filename_and_label_tensor: A scalar string tensor.
 
-    # Get images and labels for CIFAR-10
-    # Labels: int32 value between 0..9
-    images, labels = cifar10.distorted_inputs()
+  Returns:
+    Two tensors: the decoded image, and the int label.
+  """
+  # Stucture of one line in file list
+  record_defaults = [[""], [""], [""], [""], [1]]
 
+  # Parse line
+  filename, d1, d2, d3, label = tf.decode_csv(filename_and_label_tensor,
+                                  record_defaults=record_defaults,
+                                  field_delim=" ")
 
-    #This must be replaced with my method. Output should be the same.
-    #logits: Classifier output, 10-dim vector per label with logits
-    print('om:images: {}'.format(images))
+  file_contents = tf.read_file(filename)
+  example = tf.image.decode_png(file_contents)
+  return example, label
 
-def maybe_download_and_extract():
-  """Download and extract the tarball from Alex's website."""
-  dest_directory = FLAGS.data_dir
-  if not os.path.exists(dest_directory):
-    os.makedirs(dest_directory)
-  filename = DATA_URL.split('/')[-1]
-  filepath = os.path.join(dest_directory, filename)
-  if not os.path.exists(filepath):
-    def _progress(count, block_size, total_size):
-      sys.stdout.write('\r>> Downloading %s %.1f%%' % (filename,
-                                                       float(count * block_size) / float(total_size) * 100.0))
-      sys.stdout.flush()
+image_list = read_txt_file(txt_list)
 
-    filepath, _ = urllib.request.urlretrieve(DATA_URL, filepath, _progress)
-    print()
-    statinfo = os.stat(filepath)
-    print('Successfully downloaded', filename, statinfo.st_size, 'bytes.')
-    tarfile.open(filepath, 'r:gz').extractall(dest_directory)
+filename_queue = tf.train.string_input_producer(image_list)
 
-# If named main it seems to be callable by TF.
-def main(argv=None):
-  print('Hello')
-  maybe_download_and_extract()
-  if tf.gfile.Exists(FLAGS.train_dir):
-    tf.gfile.DeleteRecursively(FLAGS.train_dir)
-  tf.gfile.MakeDirs(FLAGS.train_dir)
-  # train()
+img, label = read_my_file_format(filename_queue.dequeue())
 
+model = tf.initialize_all_variables()
 
-if __name__ == '__main__':
-  tf.app.run()
+with tf.Session() as sess:
 
+  sess.run(model)
+  coord = tf.train.Coordinator()
+  threads = tf.train.start_queue_runners(coord=coord)
 
+  for i in range(5):
+    ex, lbl = sess.run([img, label])
+    print(lbl)
+
+  coord.request_stop()
+  coord.join(threads)
 
