@@ -40,17 +40,27 @@ filename_queue = tf.train.string_input_producer(image_list)
 img, label = read_my_file_format(filename_queue.dequeue())
 
 model = tf.initialize_all_variables()
+# What is the difference to the following?
+#model = tf.global_variables_initializer()
 
-with tf.Session() as sess:
+sess = tf.Session()
 
-  sess.run(model)
-  coord = tf.train.Coordinator()
-  threads = tf.train.start_queue_runners(coord=coord)
+sess.run(model)
+coord = tf.train.Coordinator()
+threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-  for i in range(5):
+try:
+  while not coord.should_stop():
+    # Run training or whatever
     ex, lbl = sess.run([img, label])
     print(lbl)
 
+except tf.errors.OutOfRangeError:
+  print('Done training -- epoch limit reached')
+finally:
+  #When done, ask the threads to stop
   coord.request_stop()
-  coord.join(threads)
 
+# Wait for threads to finish
+coord.join(threads)
+sess.close()
