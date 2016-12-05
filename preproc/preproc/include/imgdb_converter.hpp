@@ -7,7 +7,7 @@
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
 
-typedef std::pair<cv::Mat, int > Sample;
+typedef std::pair<cv::Mat, unsigned char > Sample;
 
 const size_t max_patch_size = 1024;
 
@@ -40,8 +40,8 @@ private:
   /**
    * The buffer holds the converted images as a binary array.
    */
-  std::vector<unsigned char> dataset_buffer_;
- };
+  std::vector<unsigned char> buffer_;
+};
 
 
 /**

@@ -11,7 +11,7 @@ void TileImage(Sample smpl, std::vector<Sample>&  samples, cv::Size patch_size)
 {
   size_t area = patch_size.area();
   cv::Mat img = smpl.first;
-  int label = smpl.second;
+  unsigned char label = smpl.second;
   
   CV_Assert( area != 0 &&
              area <= img.rows*img.cols );
@@ -76,11 +76,8 @@ void ImgdbConverter::LoadImages(const std::string& txtfile)
       ParseLine(imglistline, tokens);
       
       //Load label
-      int lbl = std::atoi(tokens[4].c_str());
-      if (!(lbl == 1 || lbl == 2 || lbl == 3 || lbl == 6))
-      {
-        throw std::runtime_error("Unknown label");
-      }
+      unsigned char lbl = std::atoi(tokens[4].c_str());
+
       cv::Mat img = cv::imread(tokens[0]);
       
       //Assert images not empty plus have square shape
@@ -112,30 +109,49 @@ void ImgdbConverter::LoadImages(const std::string& txtfile)
 
 void ImgdbConverter::SquashIntoArray()
 {
-  const size_t imgsize = channels_
-                        * patch_size_.width
-                        * patch_size_.height;
-
-  const size_t bufsize =  sample_list_.size()
+  
+  //We assert that all images are of equal size in every dimension.
+  
+  const size_t bufsize =  sample_list_.size()   // Reserved size for one-byte labels
+                        + sample_list_.size()
                         * channels_
                         * patch_size_.width
                         * patch_size_.height;
   
   
-  dataset_buffer_.reserve( bufsize );
-  
+  buffer_.reserve( bufsize );
+  printf("# elements prior processing: %lu\n", bufsize);
   for (auto &smpl : sample_list_)
   {
-    cv::Mat im = smpl.first;
-    unsigned char buf[imgsize];
-    memccpy(buf, im.data, imgsize, imgsize);
-    dataset_buffer_.push_back(buf);
-    printf("%dx%d %d\n",im.rows,im.cols, smpl.second);
-//    cv::imwrite(  std::string("/Users/oliver/desktop/test_out")
-//                + std::to_string(i)
-//                + std::string(".jpg"),
-//                  im);
+    try
+    {
+      //Insert label into buffer
+      unsigned char lbl = smpl.second;
+      buffer_.insert(buffer_.end(), lbl);
+      
+      //Insert image -
+      //Split image and store it in per-channel order,
+      // i.e. BBBBB..GGGGG..RRRRR..
+      cv::Mat im = smpl.first;
+      
+      CV_Assert(im.channels() == 3); //TODO bad style
+      cv::Mat bgr[3];
+      cv::split(im, bgr);
+      
+      for(int i=0; i < im.channels(); i++)
+      {
+        cv::Mat src = bgr[i];
+        unsigned char* end = src.data + im.total();
+        buffer_.insert(buffer_.end(), src.data, end);
+      }
+    }//try
+    catch (cv::Exception &e)
+    {
+      printf("OpenCV Error, SquashIntoArray(): %s\n", e.what());
+      continue;
+    }
   }
+  printf("# elements after processing: %lu\n", buffer_.size());
 }
 
 
