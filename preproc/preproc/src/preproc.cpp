@@ -1,83 +1,25 @@
-#include <fstream>
-#include <vector>
-#include <sstream>
-#include <array>
+#include <string>
 #include <stdexcept>
 
-#include <opencv2/core.hpp>
-#include <opencv2/imgcodecs.hpp>
-
-typedef std::pair<cv::Mat, int > Sample;
-
-/**
- * Copied from crowder library
- */
-void ParseLine(const std::string& strline, std::vector<std::string>& tokens)
-{
-  std::istringstream buf(strline);
-  std::istream_iterator<std::string> beg(buf), end;
-  tokens = std::vector<std::string>(beg, end);
-}
-
-void ReadList(std::string& txtfile, std::vector<Sample>& samples)
-{
-
-  std::ifstream imglist(txtfile);
-  if (!imglist.is_open())
-  {
-    throw std::runtime_error("Cannot open list.");
-  }
-  std::string imglistline;
-  int i = 0;
-  while (std::getline(imglist, imglistline))
-  {
-    try
-    {
-#ifdef _DEBUG
-      printf("%d:$%s$\n", i, imglistline.c_str());
-#endif
-      // Parse one line of text file
-      std::vector<std::string> tokens;
-      ParseLine(imglistline, tokens);
-      
-      //Load label
-      int lbl = std::atoi(tokens[4].c_str());
-      if (!(lbl == 1 || lbl == 2 || lbl == 3 || lbl == 6))
-      {
-        throw std::runtime_error("Unknown label");
-      }
-      cv::Mat img = cv::imread(tokens[0]);
-      CV_Assert(!img.empty());
-      samples.push_back(Sample(img,lbl));
-      i++;
-    }
-    catch (cv::Exception &e)
-    {
-      printf("OpenCV Warning: %s\n", e.what());
-    }
-    //TODO This should be your own error class(?)
-    catch( std::runtime_error &e)
-    {
-      printf("Runtime Warning: %s\n", e.what());
-    }
-  }
-}
-
-//void CreateDatasetBinary(std::vector<Sample>& samples, std::array<char, const size_t>& buffer )
-//{
-//  printf("Inside func()\n");
-//}
+#include "imgdb_converter.hpp"
 
 int main(int argc, char* argv[])
 {
-  if(argc != 2) return -1;
+  if(argc != 3) return -1;
   
   try
   {
-    std::string fname = argv[1];
-    std::vector<Sample> obj_list;
-
-    ReadList(fname, obj_list);
+    const std::string fname = argv[1];
+    const size_t patch_size = std::atoi(argv[2]);
+    
+    printf("Starting processing with a patchsize of %lux%lupx\n", patch_size, patch_size);
+    
+    //Converter with pre-defined patchsize and #channels
+    ImgdbConverter converter(patch_size, 3);
+    converter.LoadImages(fname);
+    
+    //Get image from mat and convert to channel interleaved binary array
+    converter.SquashIntoArray();
     
     //Enforce a constant image size
     //TODO!!
@@ -85,33 +27,29 @@ int main(int argc, char* argv[])
     //Create a binary dataset which complies to the binary
     //CIFAR structure format
     
-    cv::Mat im = obj_list[0].first;
-    const size_t array_size =   obj_list.size()
-                              * im.rows * im.rows
-                              * im.channels()
-                              + 1;
-    
-    char *dataset = new char[array_size];
-    
-    //Get image from mat and convert to channel interleaved format
-    for (auto vector von ganzen Bildern)
-    {
-      original mat;
-      cv::Mat[3] bgr;
-      split(mat,bgr);
+//    cv::Mat im = obj_list[0].first;
 
-      memcpy(dataset[pos],bgr[0].data,bgr[0].size);
-      pos += bgr[0].size;
-    }
-    }
-    //CreateDatasetBinary(obj_list, dataset);
-    
-    printf("# images: %lu\n", obj_list.size());
-    delete [] dataset;
+//    
+
+//    for (auto vector von ganzen Bildern)
+//    {
+//      original mat;
+//      cv::Mat[3] bgr;
+//      split(mat,bgr);
+//
+//      memcpy(dataset[pos],bgr[0].data,bgr[0].size);
+//      pos += bgr[0].size;
+//    }
+//    }
+//    //CreateDatasetBinary(obj_list, dataset);
+////    delete [] dataset;
+//cv::imwrite("/Users/oliver/desktop/test_out.jpg", sample_list[2].first);
+
   }
   catch( std::runtime_error &e)
   {
-    printf("Runtime Warning: %s\n", e.what());
+    printf("Runtime Error: %s\n", e.what());
+    return -1;
   }
   catch(...)
   {

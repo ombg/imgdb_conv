@@ -44,12 +44,13 @@ include_directories(${OpenCV_INCLUDE_DIRS})
 
 set(IMG_PREPROC_INC ./include)
 set(IMG_PREPROC_HPP
-            ${IMG_PREPROC_INC}/preproc.hpp
+            ${IMG_PREPROC_INC}/imgdb_converter.hpp
             )
 
 set(IMG_PREPROC_SRC ./src)
 set(IMG_PREPROC_CPP 
             ${IMG_PREPROC_SRC}/preproc.cpp
+            ${IMG_PREPROC_SRC}/imgdb_converter.cpp
             )
 
 include_directories(${IMG_PREPROC_INC})

@@ -1,3 +1,5 @@
+
+
 import tensorflow as tf
 txt_list = "/Users/oliver/data/cache/test_png_full.txt"
 # image_list = "/Users/oliver/data/cache/test_simple.txt"
