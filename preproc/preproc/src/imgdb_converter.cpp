@@ -120,7 +120,7 @@ void ImgdbConverter::SquashIntoArray()
   
   
   buffer_.reserve( bufsize );
-  printf("# elements prior processing: %lu\n", bufsize);
+  printf("Number of bytes calculated: %lu\n", bufsize);
   for (auto &smpl : sample_list_)
   {
     try
@@ -151,7 +151,18 @@ void ImgdbConverter::SquashIntoArray()
       continue;
     }
   }
-  printf("# elements after processing: %lu\n", buffer_.size());
+  printf("Number of bytes processed: %lu\n", buffer_.size());
 }
 
+void ImgdbConverter::SaveBinaryFormat(std::string outname)
+{
+  std::ofstream outfile(outname, std::ios::out | std::ofstream::binary);
+  
+  std::copy(buffer_.begin(),
+            buffer_.end(),
+            //TODO: ?? See http://stackoverflow.com/a/12372783/166435
+            std::ostreambuf_iterator<char>(outfile));
+  
+  outfile.close();
+}
 

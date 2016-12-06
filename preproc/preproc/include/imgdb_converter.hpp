@@ -20,7 +20,7 @@ public:
   
   void LoadImages(const std::string& txtfile);
   void SquashIntoArray();
-  
+  void SaveBinaryFormat(std::string binfile);
 private:
   /**
    * The constant patch size which each sample must have.

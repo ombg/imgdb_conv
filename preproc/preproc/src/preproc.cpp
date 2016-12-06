@@ -1,3 +1,11 @@
+/**
+ * Finished preproc module. It loads images which are on a list.
+ * These images are converted in a fixed-length format and
+ * written in raw binary format to disk. Labels are processed along side.
+ *
+ * usage: preproc-bin <txt-list> <bin-images> <patch-size>
+ */
+
 #include <string>
 #include <stdexcept>
 
@@ -5,45 +13,28 @@
 
 int main(int argc, char* argv[])
 {
-  if(argc != 3) return -1;
+  
+  printf("usage: %s <txt-list> <bin-images> <patch-size>\n", argv[0]);
+  
+  if(argc != 4) return -1;
   
   try
   {
-    const std::string fname = argv[1];
-    const size_t patch_size = std::atoi(argv[2]);
+    const std::string in_name = argv[1];
+    const std::string out_name = argv[2];
+
+    const size_t patch_size = std::atoi(argv[3]);
     
     printf("Starting processing with a patchsize of %lux%lupx\n", patch_size, patch_size);
     
     //Converter with pre-defined patchsize and #channels
     ImgdbConverter converter(patch_size, 3);
-    converter.LoadImages(fname);
+    converter.LoadImages(in_name);
     
     //Get image from mat and convert to channel interleaved binary array
     converter.SquashIntoArray();
     
-    //Enforce a constant image size
-    //TODO!!
-    //Assert img.rows == img.cols ( also for all images)
-    //Create a binary dataset which complies to the binary
-    //CIFAR structure format
-    
-//    cv::Mat im = obj_list[0].first;
-
-//    
-
-//    for (auto vector von ganzen Bildern)
-//    {
-//      original mat;
-//      cv::Mat[3] bgr;
-//      split(mat,bgr);
-//
-//      memcpy(dataset[pos],bgr[0].data,bgr[0].size);
-//      pos += bgr[0].size;
-//    }
-//    }
-//    //CreateDatasetBinary(obj_list, dataset);
-////    delete [] dataset;
-//cv::imwrite("/Users/oliver/desktop/test_out.jpg", sample_list[2].first);
+    converter.SaveBinaryFormat(out_name);
 
   }
   catch( std::runtime_error &e)
