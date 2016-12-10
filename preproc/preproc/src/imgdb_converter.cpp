@@ -77,7 +77,7 @@ void ImgdbConverter::LoadImages(const std::string& txtfile)
       
       //Load label
       unsigned char lbl = std::atoi(tokens[4].c_str());
-
+      if(lbl == 6) lbl = 0;
       cv::Mat img = cv::imread(tokens[0]);
       
       //Assert images not empty plus have square shape
