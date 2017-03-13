@@ -3,6 +3,11 @@
  * These images are converted in a fixed-length format and
  * written in raw binary format to disk. Labels are processed along side.
  *
+ * preproc loads an image list (IMGDB txt output format) and 
+ * produces a large binary containing image data and labels. 
+ * The image data binary holds every <label, image> pair of the list as 
+ * a binary array of constant size - one directly after the other.
+ *
  * usage: preproc-bin <txt-list> <bin-images> <patch-size>
  */
 

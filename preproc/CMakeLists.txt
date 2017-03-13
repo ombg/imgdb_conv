@@ -2,12 +2,12 @@ cmake_minimum_required (VERSION 2.8.11)
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.10)
 project (img_preproc)
 
-# add_definitions("-std=c++11")
+add_definitions("-std=c++14")
 # set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake" )
 
 # Add OpenCV 3.1
 #find_package( OpenCV)
-find_package( OpenCV REQUIRED  core highgui imgcodecs 
+find_package( OpenCV 3.1 REQUIRED  core highgui imgcodecs 
                      HINTS /usr/local/opt/opencv3)
 #find_package( OpenCV 2.4 REQUIRED core highgui imgproc features2d)
 

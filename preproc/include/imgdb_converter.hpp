@@ -3,6 +3,7 @@
 #include <sstream>
 #include <array>
 #include <stdexcept>
+#include <iterator>
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgcodecs.hpp>
