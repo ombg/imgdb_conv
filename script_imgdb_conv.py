@@ -7,6 +7,14 @@ import os
 import subprocess
 import glob
 
+"""
+Script for calling preproc executable.
+
+preproc loads an image list (IMGDB txt output format) and 
+produces a large binary containing image data and labels. 
+The image data binary holds every <label, image> pair of the list as 
+a binary array of constant size - one directly after the other.
+"""
 ### Adapt the following parameters before running the script
 # Full path to the executable
 binary = "/home/meyn_ol/git/imgdb_conv/preproc/release/preproc"
